@@ -281,6 +281,7 @@
   "maximum_discount": "Maximum Discount",
   "minimum_order_amount_is": "Minimum order amount is",
   "minimum_order_qty_is": "The minimum order quantity for different products is",
+  "remaining":"remaining",
   "you_got_discount_of": "You got discount of",
   "are_you_agree_with_this_order_fail": "Are you agree with this order fail?",
   "if_you_do_not_pay": "If you do not continue with your order payment system then your order will be failed. You can switch your order to Cash On Delivery now.",
