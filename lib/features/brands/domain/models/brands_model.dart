@@ -1,4 +1,6 @@
 
+import '../../../../util/app_constants.dart';
+
 class BrandModel {
   int? id;
   String? name;
@@ -26,7 +28,7 @@ class BrandModel {
     id = json['id'];
     name = json['name'];
     slug = json['slug'];
-    imageFullUrl = json['image_full_url'];
+    imageFullUrl = "${AppConstants.baseUrl}/storage/app/public/brand//${json['image']}";
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

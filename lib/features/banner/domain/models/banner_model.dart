@@ -2,6 +2,8 @@ import 'package:sixam_mart/features/item/domain/models/basic_campaign_model.dart
 import 'package:sixam_mart/features/item/domain/models/item_model.dart';
 import 'package:sixam_mart/features/store/domain/models/store_model.dart';
 
+import '../../../../util/app_constants.dart';
+
 class BannerModel {
   List<BasicCampaignModel>? campaigns;
   List<Banner>? banners;
@@ -58,7 +60,7 @@ class Banner {
     id = json['id'];
     title = json['title'];
     type = json['type'];
-    imageFullUrl = json['image_full_url'];
+    imageFullUrl = "${AppConstants.baseUrl}/storage/app/public/banner//${json['image']}";
     link = json['link'];
     store = json['store'] != null ? Store.fromJson(json['store']) : null;
     item = json['item'] != null ? Item.fromJson(json['item']) : null;
