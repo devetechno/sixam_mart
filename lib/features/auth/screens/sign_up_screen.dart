@@ -21,6 +21,8 @@ import 'package:sixam_mart/common/widgets/menu_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../util/app_constants.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -137,7 +139,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                         const SizedBox(height: Dimensions.paddingSizeExtraLarge),
 
                         Row(children: [
-                          ResponsiveHelper.isDesktop(context) ? Expanded(
+                          ResponsiveHelper.isDesktop(context) && AppConstants.registerWithEmail ? Expanded(
                             child: CustomTextField(
                               labelText: 'email'.tr,
                               titleText: 'enter_email'.tr,
@@ -150,7 +152,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                               validator: (value) => ValidateCheck.validateEmail(value),
                             ),
                           ) : const SizedBox(),
-                          SizedBox(width: ResponsiveHelper.isDesktop(context) ? Dimensions.paddingSizeSmall : 0),
+                          SizedBox(width: ResponsiveHelper.isDesktop(context) && AppConstants.registerWithEmail ? Dimensions.paddingSizeSmall : 0),
 
                           Expanded(
                             child: CustomTextField(
@@ -174,7 +176,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                         ]),
                         const SizedBox(height: Dimensions.paddingSizeExtraLarge),
 
-                        !ResponsiveHelper.isDesktop(context) ? CustomTextField(
+                        !ResponsiveHelper.isDesktop(context) && AppConstants.registerWithEmail ? CustomTextField(
                           labelText: 'email'.tr,
                           titleText: 'enter_email'.tr,
                           controller: _emailController,
@@ -185,7 +187,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                           required: true,
                           validator: (value) => ValidateCheck.validateEmptyText(value, null),
                         ) : const SizedBox(),
-                        SizedBox(height: !ResponsiveHelper.isDesktop(context) ? Dimensions.paddingSizeLarge : 0),
+                        SizedBox(height: !ResponsiveHelper.isDesktop(context) && AppConstants.registerWithEmail ? Dimensions.paddingSizeLarge : 0),
 
                         Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Expanded(
@@ -310,8 +312,8 @@ class SignUpScreenState extends State<SignUpScreen> {
   void _register(AuthController authController, String countryCode) async {
     String firstName = _firstNameController.text.trim();
     String lastName = _lastNameController.text.trim();
-    String email = _emailController.text.trim();
     String number = _phoneController.text.trim();
+    String email = AppConstants.registerWithEmail? _emailController.text.trim() : "$number@gmail.com";
     String password = _passwordController.text.trim();
     String confirmPassword = _confirmPasswordController.text.trim();
     String referCode = _referCodeController.text.trim();

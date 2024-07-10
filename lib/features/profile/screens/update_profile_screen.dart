@@ -18,6 +18,8 @@ import 'package:sixam_mart/features/profile/widgets/profile_bg_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../util/app_constants.dart';
+
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
 
@@ -109,19 +111,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   const SizedBox(height: Dimensions.paddingSizeLarge),
 
-                  Text(
-                    'email'.tr,
-                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
-                  ),
-                  const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-                  MyTextField(
-                    hintText: 'email'.tr,
-                    controller: _emailController,
-                    focusNode: _emailFocus,
-                    inputAction: TextInputAction.done,
-                    inputType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: Dimensions.paddingSizeLarge),
+                  if(AppConstants.registerWithEmail)
+                  ...[
+                    Text(
+                      'email'.tr,
+                      style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                    ),
+                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                    MyTextField(
+                      hintText: 'email'.tr,
+                      controller: _emailController,
+                      focusNode: _emailFocus,
+                      inputAction: TextInputAction.done,
+                      inputType: TextInputType.emailAddress,
+                    ),
+                    const SizedBox(height: Dimensions.paddingSizeLarge),
+                  ],
 
                   Row(children: [
                     Text(

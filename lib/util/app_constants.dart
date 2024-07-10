@@ -249,6 +249,7 @@ class AppConstants {
   ///settings deve
   static const bool subcatimg = true;
   static const bool itemsgried = true;
+  static const bool registerWithEmail = false;
 
 
 
