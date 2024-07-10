@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class StoreModel {
   int? totalSize;
   String? limit;
@@ -42,6 +40,7 @@ class Store {
   String? longitude;
   String? address;
   double? minimumOrder;
+  int? minimumOrderQty;
   String? currency;
   bool? freeDelivery;
   String? coverPhotoFullUrl;
@@ -93,6 +92,7 @@ class Store {
     this.longitude,
     this.address,
     this.minimumOrder,
+    this.minimumOrderQty,
     this.currency,
     this.freeDelivery,
     this.coverPhotoFullUrl,
@@ -145,6 +145,7 @@ class Store {
     longitude = json['longitude'];
     address = json['address'];
     minimumOrder = json['minimum_order'] == null ? 0 : json['minimum_order']?.toDouble();
+    minimumOrderQty = json['minimum_order_qty'] == null ? 1 : json['minimum_order_qty']?.toInt();
     currency = json['currency'];
     freeDelivery = json['free_delivery'];
     coverPhotoFullUrl = json['cover_photo_full_url'] ?? '';
@@ -214,6 +215,7 @@ class Store {
     data['longitude'] = longitude;
     data['address'] = address;
     data['minimum_order'] = minimumOrder;
+    data['minimum_order_qty'] = minimumOrderQty;
     data['currency'] = currency;
     data['free_delivery'] = freeDelivery;
     data['cover_photo_full_url'] = coverPhotoFullUrl;
