@@ -280,6 +280,7 @@
   "minimum_purchase": "Compra mínima",
   "maximum_discount": "Descuento máximo",
   "minimum_order_amount_is": "La cantidad mínima del pedido es",
+  "minimum_order_qty_is": "La cantidad mínima de productos diferentes es",
   "you_got_discount_of": "Tienes descuento de",
   "are_you_agree_with_this_order_fail": "¿Estás de acuerdo con este fallas en este pedido?",
   "if_you_do_not_pay": "Si no continúa con el sistema de pago de su pedido, su pedido será fallido. Puede cambiar su pedido de cobrar en la entrega ahora.",
