@@ -34,6 +34,12 @@ import 'package:sixam_mart/features/cart/widgets/web_suggested_item_view_widget.
 import 'package:sixam_mart/features/home/screens/home_screen.dart';
 import 'package:sixam_mart/features/store/screens/store_screen.dart';
 
+import '../../../helper/auth_helper.dart';
+import '../../../helper/date_converter.dart';
+import '../../address/domain/models/address_model.dart';
+import '../../checkout/controllers/checkout_controller.dart';
+import '../../location/domain/models/zone_response_model.dart';
+
 class CartScreen extends StatefulWidget {
   final bool fromNav;
   const CartScreen({super.key, required this.fromNav});
@@ -86,8 +92,65 @@ class _CartScreenState extends State<CartScreen> {
       endDrawer: const MenuDrawer(),endDrawerEnableOpenDragGesture: false,
       body: GetBuilder<StoreController>(builder: (storeController) {
         return GetBuilder<CartController>(builder: (cartController) {
-          return cartController.cartList.isNotEmpty ? Column(children: [
+          final List<CartModel?>? _cartList = cartController.cartList;
+          double price = _calculatePrice(store: storeController.store, cartList: _cartList);
+          double addOns = _calculateAddonsPrice(store: storeController.store, cartList: _cartList);
+          double variations = _calculateVariationPrice(store: storeController.store, cartList: _cartList, calculateWithoutDiscount: true);
+          double? discount = _calculateDiscount(
+            store: storeController.store, cartList: _cartList, price: price, addOns: addOns,
+          );
+          double couponDiscount = PriceConverter.toFixed(Get.find<CouponController>().discount!);
 
+          double subTotal = _calculateSubTotal(price: price, addOns: addOns, variations: variations, cartList: _cartList);
+
+          double referralDiscount = _calculateReferralDiscount(subTotal, discount, couponDiscount);
+
+          double orderAmount = _calculateOrderAmount(
+            price: price, variations: variations, discount: discount, addOns: addOns,
+            couponDiscount: couponDiscount, cartList: _cartList, referralDiscount: referralDiscount,
+          );
+          return cartController.cartList.isNotEmpty ? Column(children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: cartController.cartList.length < (storeController.store?.minimumOrderQty ?? 1)?25:0,
+              width: double.maxFinite,
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault,vertical: 3),
+              color: Theme.of(context).secondaryHeaderColor,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: RichText(
+                  text: TextSpan(
+                    style: robotoMedium.copyWith(color: Colors.white),
+                    children: [
+                      TextSpan(text: '${'minimum_order_qty_is'.tr} ${storeController.store?.minimumOrderQty ?? 1} , '),
+                      TextSpan(text: 'remaining'.tr),
+                      TextSpan(text: ' ${(storeController.store?.minimumOrderQty ?? 1) - cartController.cartList.length} '),
+                    ]
+                  ),
+                ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: orderAmount < (storeController.store?.minimumOrder ?? 0)?25:0,
+              width: double.maxFinite,
+              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault,vertical: 3),
+              color: Theme.of(context).secondaryHeaderColor,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: RichText(
+                  text: TextSpan(
+                    style: robotoMedium.copyWith(color: Colors.white),
+                    children: [
+                      TextSpan(text: '${'minimum_order_amount_is'.tr} ${storeController.store?.minimumOrder ?? 0} , '),
+                      TextSpan(text: 'remaining'.tr),
+                      TextSpan(text: ' ${(storeController.store?.minimumOrder ?? 0) - orderAmount} '),
+                    
+                    ]
+                  ),
+                ),
+              ),
+            ),
             Expanded(
               child: ExpandableBottomSheet(
                 key: key,
@@ -179,13 +242,13 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                     const SizedBox(height: Dimensions.paddingSizeSmall),
 
-                                    !ResponsiveHelper.isDesktop(context) ? pricingView(cartController, cartController.cartList[0].item!) : const SizedBox(),
+                                    !ResponsiveHelper.isDesktop(context) ? pricingView(cartController, cartController.cartList[0].item!,orderAmount) : const SizedBox(),
 
                                   ]),
                                 ),
                                 ResponsiveHelper.isDesktop(context) ? const SizedBox(width: Dimensions.paddingSizeSmall) : const SizedBox(),
 
-                                ResponsiveHelper.isDesktop(context) ? Expanded(flex: 4, child: pricingView(cartController, cartController.cartList[0].item!)) : const SizedBox(),
+                                ResponsiveHelper.isDesktop(context) ? Expanded(flex: 4, child: pricingView(cartController, cartController.cartList[0].item!,orderAmount)) : const SizedBox(),
                               ],
                             ),
 
@@ -258,7 +321,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
 
-            ResponsiveHelper.isDesktop(context) ? const SizedBox.shrink() : CheckoutButton(cartController: cartController, availableList: cartController.availableList),
+            ResponsiveHelper.isDesktop(context) ? const SizedBox.shrink() : CheckoutButton(cartController: cartController, availableList: cartController.availableList,orderAmount: orderAmount),
 
           ]) : const NoDataScreen(isCart: true, text: '', showFooter: true);
         });
@@ -266,7 +329,285 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget pricingView(CartController cartController, Item item){
+    double _calculatePrice({required Store? store, required List<CartModel?>? cartList}) {
+    double price = 0;
+    if(cartList != null) {
+      for (var cartModel in cartList) {
+        if(Get.find<SplashController>().getModuleConfig(cartModel!.item!.moduleType).newVariation!){
+          price = price + (cartModel.item!.price! * cartModel.quantity!);
+        } else {
+          price = _calculateVariationPrice(store: store, cartList: cartList);
+        }
+      }
+    }
+    return PriceConverter.toFixed(price);
+  }
+
+  double _calculateAddonsPrice({required Store? store, required List<CartModel?>? cartList}) {
+    double addOns = 0;
+    if(store != null && cartList != null) {
+      for (var cartModel in cartList) {
+        List<AddOns> addOnList = [];
+        for (var addOnId in cartModel!.addOnIds!) {
+          for (AddOns addOns in cartModel.item!.addOns!) {
+            if (addOns.id == addOnId.id) {
+              addOnList.add(addOns);
+              break;
+            }
+          }
+        }
+        for (int index = 0; index < addOnList.length; index++) {
+          addOns = addOns + (addOnList[index].price! * cartModel.addOnIds![index].quantity!);
+        }
+      }
+    }
+    return PriceConverter.toFixed(addOns);
+  }
+
+  double _calculateVariationPrice({required Store? store, required List<CartModel?>? cartList, bool calculateDiscount = false, bool calculateWithoutDiscount = false}) {
+    double variationPrice = 0;
+    double variationDiscount = 0;
+    if(store != null && cartList != null) {
+      for (var cartModel in cartList) {
+        double? discount = cartModel!.item!.storeDiscount == 0 ? cartModel.item!.discount : cartModel.item!.storeDiscount;
+        String? discountType = cartModel.item!.storeDiscount == 0 ? cartModel.item!.discountType : 'percent';
+
+        if(Get.find<SplashController>().getModuleConfig(cartModel.item!.moduleType).newVariation!) {
+          for(int index = 0; index< cartModel.item!.foodVariations!.length; index++) {
+            for(int i=0; i<cartModel.item!.foodVariations![index].variationValues!.length; i++) {
+              if(cartModel.foodVariations![index][i]!) {
+                variationPrice += (PriceConverter.convertWithDiscount(cartModel.item!.foodVariations![index].variationValues![i].optionPrice!, discount, discountType, isFoodVariation: true)! * cartModel.quantity!);
+                variationDiscount += (cartModel.item!.foodVariations![index].variationValues![i].optionPrice! * cartModel.quantity!);
+              }
+            }
+          }
+        } else {
+
+          String variationType = '';
+          for(int i=0; i<cartModel.variation!.length; i++) {
+            variationType = cartModel.variation![i].type!;
+          }
+
+          if(cartModel.item!.variations!.isNotEmpty) {
+            for (Variation variation in cartModel.item!.variations!) {
+              if (variation.type == variationType) {
+                variationPrice += (variation.price! * cartModel.quantity!);
+                break;
+              }
+            }
+          } else {
+            variationDiscount += (PriceConverter.convertWithDiscount(cartModel.item!.price!, discount, discountType)! * cartModel.quantity!);
+            variationPrice += (cartModel.item!.price! * cartModel.quantity!);
+          }
+
+        }
+      }
+    }
+    if(calculateDiscount) {
+      return (variationDiscount - variationPrice);
+    } else if(calculateWithoutDiscount) {
+      return variationDiscount;
+    } else {
+      return variationPrice;
+    }
+  }
+
+  double _calculateDiscount({required Store? store, required List<CartModel?>? cartList, required double price, required double addOns}) {
+    double discount = 0;
+    if (store != null && cartList != null) {
+      for (var cartModel in cartList) {
+        double? dis = (store.discount != null
+            && DateConverter.isAvailable(store.discount!.startTime, store.discount!.endTime))
+            && cartModel!.item!.flashSale != 1
+            ? store.discount!.discount : cartModel!.item!.discount;
+        String? disType = (store.discount != null
+            && DateConverter.isAvailable(store.discount!.startTime, store.discount!.endTime))
+            && cartModel.item!.flashSale != 1
+            ? 'percent' : cartModel.item!.discountType;
+        if(Get.find<SplashController>().getModuleConfig(cartModel.item!.moduleType).newVariation!) {
+          double d = ((cartModel.item!.price! - PriceConverter.convertWithDiscount(cartModel.item!.price!, dis, disType)!) * cartModel.quantity!);
+          discount = discount + d;
+          if(disType == 'percent' && discount != 0) {
+            discount = discount + _calculateFoodVariationDiscount(cartModel: cartModel);
+          }
+        } else {
+          String variationType = '';
+          double variationPrice = 0;
+          double variationWithoutDiscountPrice = 0;
+          for(int i=0; i<cartModel.variation!.length; i++) {
+            variationType = cartModel.variation![i].type!;
+          }
+          if(cartModel.item!.variations!.isNotEmpty){
+            for (Variation variation in cartModel.item!.variations!) {
+              if (variation.type == variationType) {
+                variationPrice += (PriceConverter.convertWithDiscount(variation.price!, dis, disType)! * cartModel.quantity!);
+                variationWithoutDiscountPrice += (variation.price! * cartModel.quantity!);
+                break;
+              }
+            }
+            discount = discount + (variationWithoutDiscountPrice - variationPrice);
+
+          } else {
+            double d = ((cartModel.item!.price! - PriceConverter.convertWithDiscount(cartModel.item!.price!, dis, disType)!) * cartModel.quantity!);
+            discount = discount + d;
+          }
+
+        }
+      }
+    }
+
+    if (store != null && store.discount != null) {
+      if (store.discount!.maxDiscount != 0 && store.discount!.maxDiscount! < discount) {
+        discount = store.discount!.maxDiscount!;
+      }
+      if (store.discount!.minPurchase != 0 && store.discount!.minPurchase! > (price + addOns)) {
+        discount = 0;
+      }
+    }
+    return PriceConverter.toFixed(discount);
+  }
+
+  double _calculateFoodVariationDiscount({required CartModel? cartModel}) {
+    double variationPrice = 0;
+    double variationDiscount = 0;
+    if(cartModel != null) {
+      double? discount = cartModel.item!.storeDiscount == 0 ? cartModel.item!.discount : cartModel.item!.storeDiscount;
+      String? discountType = cartModel.item!.storeDiscount == 0 ? cartModel.item!.discountType : 'percent';
+      for (int index = 0; index < cartModel.item!.foodVariations!.length; index++) {
+        for (int i = 0; i < cartModel.item!.foodVariations![index].variationValues!.length; i++) {
+          if (cartModel.foodVariations![index][i]!) {
+            variationPrice += (PriceConverter.convertWithDiscount(
+                cartModel.item!.foodVariations![index].variationValues![i].optionPrice!, discount, discountType,
+                isFoodVariation: true)! * cartModel.quantity!);
+            variationDiscount +=
+            (cartModel.item!.foodVariations![index].variationValues![i].optionPrice! * cartModel.quantity!);
+          }
+        }
+      }
+    }
+    return (variationDiscount - variationPrice);
+  }
+
+  double _calculateOrderAmount({required double price, required double variations, required double discount, required double addOns, required double couponDiscount, required List<CartModel?>? cartList, required double referralDiscount}) {
+    double orderAmount = 0;
+    double variationPrice = 0;
+    if(cartList != null && cartList.isNotEmpty && Get.find<SplashController>().getModuleConfig(cartList[0]?.item?.moduleType).newVariation!){
+      variationPrice = variations;
+    }
+    orderAmount = (price + variationPrice - discount) + addOns - couponDiscount - referralDiscount;
+    return PriceConverter.toFixed(orderAmount);
+  }
+
+  double _calculateSubTotal({required double price, required double addOns, required double variations, required List<CartModel?>? cartList}) {
+    double subTotal = 0;
+    bool isFoodVariation = false;
+
+    if(cartList != null && cartList.isNotEmpty) {
+      isFoodVariation = Get.find<SplashController>().getModuleConfig(cartList[0]!.item!.moduleType).newVariation!;
+    }
+    if(isFoodVariation){
+      subTotal = price + addOns + variations;
+    } else {
+      subTotal = price;
+    }
+
+    return subTotal;
+  }
+
+  double _calculateOriginalDeliveryCharge({required Store? store, required AddressModel address, required double? distance, required double? extraCharge}) {
+    double deliveryCharge = -1;
+
+    Pivot? moduleData;
+    ZoneData? zoneData;
+    if(store != null) {
+      for(ZoneData zData in address.zoneData!) {
+
+        for(Modules m in zData.modules!) {
+          if(m.id == Get.find<SplashController>().module!.id && m.pivot!.zoneId == store.zoneId) {
+            moduleData = m.pivot;
+            break;
+          }
+        }
+
+        if(zData.id == store.zoneId) {
+          zoneData = zData;
+        }
+      }
+    }
+    double perKmCharge = 0;
+    double minimumCharge = 0;
+    double? maximumCharge = 0;
+    if(store != null && distance != null && distance != -1 && store.selfDeliverySystem == 1) {
+      perKmCharge = store.perKmShippingCharge!;
+      minimumCharge = store.minimumShippingCharge!;
+      maximumCharge = store.maximumShippingCharge;
+    }else if(store != null && distance != null && distance != -1 && moduleData != null) {
+      perKmCharge = moduleData.perKmShippingCharge!;
+      minimumCharge = moduleData.minimumShippingCharge!;
+      maximumCharge = moduleData.maximumShippingCharge;
+    }
+    if(store != null && distance != null) {
+      deliveryCharge = distance * perKmCharge;
+
+      if(deliveryCharge < minimumCharge) {
+        deliveryCharge = minimumCharge;
+      }else if(maximumCharge != null && deliveryCharge > maximumCharge) {
+        deliveryCharge = maximumCharge;
+      }
+    }
+
+    if(store != null && store.selfDeliverySystem == 0 && extraCharge != null) {
+      deliveryCharge = deliveryCharge + extraCharge;
+    }
+
+    if(store != null && store.selfDeliverySystem == 0 && zoneData!.increaseDeliveryFeeStatus == 1) {
+      deliveryCharge = deliveryCharge + (deliveryCharge * (zoneData.increaseDeliveryFee!/100));
+    }
+
+    return deliveryCharge;
+  }
+
+  double _calculateDeliveryCharge({required Store? store, required AddressModel address, required double? distance, required double? extraCharge, required double orderAmount, required String orderType}) {
+    double deliveryCharge = _calculateOriginalDeliveryCharge(store: store, address: address, distance: distance, extraCharge: extraCharge);
+
+    if (orderType == 'take_away' || (store != null && store.freeDelivery!)
+        || (Get.find<SplashController>().configModel!.freeDeliveryOver != null && orderAmount
+            >= Get.find<SplashController>().configModel!.freeDeliveryOver!)
+        || Get.find<CouponController>().freeDelivery || (AuthHelper.isGuestLoggedIn() && (Get.find<CheckoutController>().guestAddress == null && Get.find<CheckoutController>().orderType != 'take_away'))) {
+      deliveryCharge = 0;
+    }
+
+    return PriceConverter.toFixed(deliveryCharge);
+  }
+
+  double _calculateTotal({
+    required double subTotal, required double deliveryCharge, required double discount,
+    required double couponDiscount, required bool taxIncluded, required double tax,
+    required String orderType, required double tips, required double additionalCharge, required double extraPackagingCharge,
+  }) {
+
+    return PriceConverter.toFixed(
+        subTotal + deliveryCharge - discount- couponDiscount + (taxIncluded ? 0 : tax)
+            + ((orderType != 'take_away' && Get.find<SplashController>().configModel!.dmTipsStatus == 1) ? tips : 0)
+            + additionalCharge + extraPackagingCharge
+    );
+  }
+
+  double _calculateReferralDiscount(double subTotal, double discount, double couponDiscount) {
+    double referralDiscount = 0;
+    if(Get.find<ProfileController>().userInfoModel != null &&  Get.find<ProfileController>().userInfoModel!.isValidForDiscount!) {
+      if (Get.find<ProfileController>().userInfoModel!.discountAmountType! == "percentage") {
+        referralDiscount = (Get.find<ProfileController>().userInfoModel!.discountAmount! / 100) * (subTotal - discount - couponDiscount);
+      } else {
+        referralDiscount = Get.find<ProfileController>().userInfoModel!.discountAmount!;
+      }
+    }
+    return PriceConverter.toFixed(referralDiscount);
+  }
+
+
+
+  Widget pricingView(CartController cartController, Item item, double orderAmount){
     return Container(
       decoration: ResponsiveHelper.isDesktop(context) ? BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -397,7 +738,7 @@ class _CartScreenState extends State<CartScreen> {
               ]),
             ) : const SizedBox(),
 
-            ResponsiveHelper.isDesktop(context) ? CheckoutButton(cartController: cartController, availableList: cartController.availableList) : const SizedBox.shrink(),
+            ResponsiveHelper.isDesktop(context) ? CheckoutButton(cartController: cartController, availableList: cartController.availableList,orderAmount: orderAmount) : const SizedBox.shrink(),
 
           ]);
         }
@@ -475,8 +816,9 @@ class _CartScreenState extends State<CartScreen> {
 
 class CheckoutButton extends StatelessWidget {
   final CartController cartController;
+  final double orderAmount;
   final List<bool> availableList;
-  const CheckoutButton({super.key, required this.cartController, required this.availableList});
+  const CheckoutButton({super.key, required this.cartController, required this.availableList, required this.orderAmount});
 
   @override
   Widget build(BuildContext context) {
@@ -617,8 +959,9 @@ class CheckoutButton extends StatelessWidget {
                     print('====fff===> ${cartController.notAvailableIndex}');
                   if(!cartController.cartList.first.item!.scheduleOrder! && availableList.contains(false)) {
                     showCustomSnackBar('one_or_more_product_unavailable'.tr);
-                  } 
-                  else if(cartController.cartList.length < storeController.store!.minimumOrderQty!){
+                  }else if(orderAmount < storeController.store!.minimumOrder!){
+                    showCustomSnackBar('${'minimum_order_amount_is'.tr} ${storeController.store!.minimumOrder}');
+                  }else if(cartController.cartList.length < storeController.store!.minimumOrderQty!){
                     showCustomSnackBar('${'minimum_order_qty_is'.tr} ${storeController.store!.minimumOrderQty}');
                   }
                   /*else if(AuthHelper.isGuestLoggedIn() && !Get.find<SplashController>().configModel!.guestCheckoutStatus!) {
