@@ -617,7 +617,11 @@ class CheckoutButton extends StatelessWidget {
                     print('====fff===> ${cartController.notAvailableIndex}');
                   if(!cartController.cartList.first.item!.scheduleOrder! && availableList.contains(false)) {
                     showCustomSnackBar('one_or_more_product_unavailable'.tr);
-                  } /*else if(AuthHelper.isGuestLoggedIn() && !Get.find<SplashController>().configModel!.guestCheckoutStatus!) {
+                  } 
+                  else if(cartController.cartList.length < storeController.store!.minimumOrderQty!){
+                    showCustomSnackBar('${'minimum_order_qty_is'.tr} ${storeController.store!.minimumOrderQty}');
+                  }
+                  /*else if(AuthHelper.isGuestLoggedIn() && !Get.find<SplashController>().configModel!.guestCheckoutStatus!) {
                     showCustomSnackBar('currently_your_zone_have_no_permission_to_place_any_order'.tr);
                   }*/ else {
                     if(Get.find<SplashController>().module == null) {
