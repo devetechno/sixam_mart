@@ -25,7 +25,7 @@ class BrandModel {
     id = json['id'];
     name = json['name'];
     slug = json['slug'];
-    imageFullUrl = json['image'] == null? null: (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
+    imageFullUrl = json['image'] == null? json['image_full_url'] as String? : (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

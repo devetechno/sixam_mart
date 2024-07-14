@@ -59,7 +59,7 @@ class Banner {
     id = json['id'];
     title = json['title'];
     type = json['type'];
-    imageFullUrl = json['image'] == null? null: (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
+    imageFullUrl = json['image'] == null? json['image_full_url'] as String? : (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
     link = json['link'];
     store = json['store'] != null ? Store.fromJson(json['store']) : null;
     item = json['item'] != null ? Item.fromJson(json['item']) : null;

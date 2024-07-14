@@ -39,7 +39,7 @@ class CategoryModel {
     _position = json['position'];
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
-    _imageFullUrl = json['image'] == null? null: (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
+    _imageFullUrl = json['image'] == null? json['image_full_url'] as String? : (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
   }
 
   Map<String, dynamic> toJson() {

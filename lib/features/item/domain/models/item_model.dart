@@ -143,7 +143,7 @@ class Item {
     id = json['id'];
     name = json['name'];
     description = json['description'];
-    imageFullUrl = json['image'] == null? null: (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
+    imageFullUrl = json['image'] == null? json['image_full_url'] as String? : (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
     imagesFullUrl = json['images_full_url'] != null ? json['images_full_url'].cast<String>() : [];
     categoryId = json['category_id'];
     if (json['category_ids'] != null) {
