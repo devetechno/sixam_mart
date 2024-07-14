@@ -31,12 +31,9 @@ import 'package:sixam_mart/util/app_constants.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/util/styles.dart';
-import 'package:sixam_mart/common/widgets/item_view.dart';
 import 'package:sixam_mart/common/widgets/menu_drawer.dart';
-import 'package:sixam_mart/common/widgets/paginated_list_view.dart';
 import 'package:sixam_mart/common/widgets/web_menu_bar.dart';
 import 'package:sixam_mart/features/home/screens/web_new_home_screen.dart';
-import 'package:sixam_mart/features/home/widgets/filter_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart/features/home/widgets/module_view.dart';
@@ -44,7 +41,6 @@ import 'package:sixam_mart/features/parcel/screens/parcel_category_screen.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../common/widgets/custom_snackbar.dart';
-import '../widgets/call_bottom_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

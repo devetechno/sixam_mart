@@ -110,13 +110,14 @@ class _FlashSaleViewWidgetState extends State<FlashSaleViewWidget> {
           SizedBox(
             width: Get.width * 0.7,
             child: Stack(
+              alignment: Alignment.center,
               children: [
                 Builder(
                   builder: (context) {
                     bool bothZero = remaining == 0 && stock == 0;
                     return LinearProgressIndicator(
                       borderRadius: const BorderRadius.all(Radius.circular(Dimensions.radiusDefault)),
-                      minHeight: 15,
+                      minHeight: 20,
                       value: bothZero ? 0 : remaining / stock,
                       valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
                       backgroundColor: Theme.of(context).primaryColor.withOpacity(0.25),
@@ -124,12 +125,9 @@ class _FlashSaleViewWidgetState extends State<FlashSaleViewWidget> {
                   }
                 ),
 
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    '${'sold'.tr} $sold/$stock',
-                    style: robotoMedium.copyWith(color: Theme.of(context).cardColor, fontSize: Dimensions.fontSizeSmall),
-                  ),
+                Text(
+                  '${'sold'.tr} $sold/$stock',
+                  style: robotoMedium.copyWith(color: Theme.of(context).cardColor, fontSize: Dimensions.fontSizeSmall),
                 ),
               ],
             ),
