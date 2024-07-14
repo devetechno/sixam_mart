@@ -11,6 +11,7 @@
 migrate_working_dir/
 
 # IntelliJ related
+*.jks
 *.iml
 *.ipr
 *.iws
@@ -31,6 +32,10 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+get_changed_files.sh
+
+# Web related
+lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -42,5 +47,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# form me
