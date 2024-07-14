@@ -13,9 +13,14 @@ class ImageViewerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.find<ItemController>().setImageIndex(0, false);
-    List<String?> imageList = [];
-    imageList.add(item.imageFullUrl);
-    imageList.addAll(item.imagesFullUrl!);
+    List<String> imageList = [];
+    imageList.add(item.imageFullUrl!);
+    for (String url in item.imagesFullUrl!) {
+      final List<String> parts = url.split('/');
+      final String name = parts.removeLast();
+      imageList.add("${parts.join('/')}//$name");
+    }
+    
     final PageController pageController = PageController();
 
     return Scaffold(
@@ -32,6 +37,8 @@ class ImageViewerScreen extends StatelessWidget {
               itemCount: imageList.length,
               pageController: pageController,
               builder: (BuildContext context, int index) {
+                print("--- ${imageList[index]} ---");
+                print(imageList);
                 return PhotoViewGalleryPageOptions(
                   imageProvider: NetworkImage('${imageList[index]}'),
                   initialScale: PhotoViewComputedScale.contained,

@@ -18,7 +18,11 @@ class ItemImageViewWidget extends StatelessWidget {
 
     List<String?> imageList = [];
     imageList.add(item!.imageFullUrl);
-    imageList.addAll(item!.imagesFullUrl!);
+    for (String url in item!.imagesFullUrl!) {
+      final List<String> parts = url.split('/');
+      final String name = parts.removeLast();
+      imageList.add("${parts.join('/')}//$name");
+    }
 
     return GetBuilder<ItemController>(builder: (itemController) {
 
