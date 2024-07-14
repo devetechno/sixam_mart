@@ -27,8 +27,6 @@ import 'package:sixam_mart/features/checkout/screens/checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'cart_snackbar.dart';
-
 class ItemBottomSheet extends StatefulWidget {
   final Item? item;
   final bool isCampaign;

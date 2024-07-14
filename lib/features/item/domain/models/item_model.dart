@@ -2,8 +2,6 @@ import 'package:get/get.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/item/domain/models/basic_medicine_model.dart';
 
-import '../../../../util/app_constants.dart';
-
 class ItemModel {
   int? totalSize;
   String? limit;
@@ -145,7 +143,7 @@ class Item {
     id = json['id'];
     name = json['name'];
     description = json['description'];
-    imageFullUrl = "${AppConstants.baseUrl}/storage/app/public/product//${json['image']}";
+    imageFullUrl = json['image'] == null? null: (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
     imagesFullUrl = json['images_full_url'] != null ? json['images_full_url'].cast<String>() : [];
     categoryId = json['category_id'];
     if (json['category_ids'] != null) {

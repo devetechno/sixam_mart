@@ -1,6 +1,3 @@
-
-import '../../../../util/app_constants.dart';
-
 class CategoryModel {
   int? _id;
   String? _name;
@@ -42,7 +39,7 @@ class CategoryModel {
     _position = json['position'];
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
-    _imageFullUrl = "${AppConstants.baseUrl}/storage/app/public/category//${json['image']}";
+    _imageFullUrl = json['image'] == null? null: (json['image_full_url'] as String?)?.replaceAll(json['image'] as String, "/${json['image']}");
   }
 
   Map<String, dynamic> toJson() {
