@@ -51,14 +51,14 @@ Future<void> main() async {
 
   if(GetPlatform.isWeb){
     await Firebase.initializeApp(options: const FirebaseOptions(
-        apiKey: "AIzaSyDnsGvZY_60T7IE-IATu0GUDjtD3a3dBTA",
-        authDomain: "devetechno-de754.firebaseapp.com",
-        databaseURL: "https://ammart-8885e-default-rtdb.firebaseio.com",
+        apiKey: "AIzaSyCt0kx1XwJpcaLTBOZYbC_x3SrufvH_dS4",
+        authDomain: "elmowared-b4c6c.firebaseapp.com",
+        // databaseURL: "https://ammart-8885e-default-rtdb.firebaseio.com", // TODO: add this later
         projectId: "elmowared-b4c6c",
         storageBucket: "elmowared-b4c6c.appspot.com",
         messagingSenderId: "749163718953",
-        appId: "11:749163718953:android:3eefbefc16878388ee6f38",
-        measurementId: "G-D6CSWZT6VT"
+        appId: "1:749163718953:web:e68dc13e48ddc961ee6f38",
+        measurementId: "G-GLZCSZWX3C"
 
     ));
     MetaSEO().config();
