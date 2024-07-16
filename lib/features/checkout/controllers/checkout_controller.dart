@@ -162,6 +162,7 @@ class CheckoutController extends GetxController implements GetxService {
   }
 
   void setPaymentMethod(int index, {bool isUpdate = true}) {
+    print("$index ----------------- index");
     _paymentMethodIndex = index;
     if(isUpdate){
       update();

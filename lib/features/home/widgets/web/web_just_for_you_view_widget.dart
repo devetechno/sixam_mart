@@ -65,7 +65,7 @@ class _WebJustForYouViewWidgetState extends State<WebJustForYouViewWidget> {
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
-            child: Text('just_for_you'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+            child: Text('offers_and_discounts'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
           ),
 
           SizedBox(
@@ -143,7 +143,7 @@ class WebJustForYouShimmerView extends StatelessWidget {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
-          child: Text('just_for_you'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+          child: Text('offers_and_discounts'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
         ),
 
         SizedBox(

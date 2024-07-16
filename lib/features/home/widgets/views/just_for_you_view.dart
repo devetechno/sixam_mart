@@ -21,24 +21,29 @@ class _JustForYouViewState extends State<JustForYouView> {
     //bool isGrocery = Get.find<SplashController>().module != null && Get.find<SplashController>().module!.moduleType.toString() == AppConstants.grocery;
 
     return GetBuilder<CampaignController>(builder: (campaignController) {
-        return campaignController.itemCampaignList != null ? campaignController.itemCampaignList!.isNotEmpty ? Padding(
-          padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
-          child: Column(children: [
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-              child: TitleWidget(
-                title: 'offers_and_discounts'.tr,
-                onTap: () => Get.toNamed(RouteHelper.getItemCampaignRoute(isJustForYou: true)),
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
-              child: SizedBox(
-                width: Get.width,
-                child: const Column( children: [
-                  /*isGrocery ? Swiper(
+      return campaignController.itemCampaignList != null
+          ? campaignController.itemCampaignList!.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: Dimensions.paddingSizeDefault),
+                  child: Column(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: Dimensions.paddingSizeDefault),
+                      child: TitleWidget(
+                        title: 'offers_and_discounts'.tr,
+                        onTap: () => Get.toNamed(
+                            RouteHelper.getItemCampaignRoute(
+                                isJustForYou: true)),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: Dimensions.paddingSizeDefault),
+                      child: SizedBox(
+                        width: Get.width,
+                        child: const Column(children: [
+                          /*isGrocery ? Swiper(
                     itemCount: campaignController.itemCampaignList!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
@@ -69,9 +74,11 @@ class _JustForYouViewState extends State<JustForYouView> {
                     outer: true,
                   ) : */
 
-                  Directionality(textDirection: TextDirection.ltr, child: CircleListView()),
+                          Directionality(
+                              textDirection: TextDirection.ltr,
+                              child: CircleListView()),
 
-                  /*const SizedBox(height: Dimensions.paddingSizeDefault),
+                          /*const SizedBox(height: Dimensions.paddingSizeDefault),
                   Center(
                     child: Row(children: [
                       // const SizedBox(width: Dimensions.paddingSizeDefault),
@@ -79,13 +86,14 @@ class _JustForYouViewState extends State<JustForYouView> {
                       Text('swipe_left'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor)),
                     ]),
                   ),*/
-                ]),
-              ),
-            ),
-          ]),
-        ) : const SizedBox() : /*const JustForYouShimmerView();*/ const CircleListViewShimmerView();
-      }
-    );
+                        ]),
+                      ),
+                    ),
+                  ]),
+                )
+              : const SizedBox()
+          : /*const JustForYouShimmerView();*/ const CircleListViewShimmerView();
+    });
   }
 }
 
@@ -95,29 +103,31 @@ class JustForYouShimmerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
+      padding:
+          const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
       child: Column(children: [
-
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.symmetric(
+              horizontal: Dimensions.paddingSizeDefault),
           child: TitleWidget(
-            title: 'just_for_you'.tr,
+            title: 'offers_and_discounts'.tr,
           ),
         ),
-
         Padding(
           padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
           child: Shimmer(
             duration: const Duration(seconds: 2),
             enabled: true,
             child: SizedBox(
-              height: 200, width: Get.width,
+              height: 200,
+              width: Get.width,
               child: Swiper(
                 itemCount: 3,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                      borderRadius:
+                          BorderRadius.circular(Dimensions.radiusDefault),
                       color: Colors.grey[300],
                     ),
                   );
@@ -133,5 +143,3 @@ class JustForYouShimmerView extends StatelessWidget {
     );
   }
 }
-
-

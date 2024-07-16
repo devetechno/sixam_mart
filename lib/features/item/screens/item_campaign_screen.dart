@@ -26,7 +26,9 @@ class _ItemCampaignScreenState extends State<ItemCampaignScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: widget.isJustForYou ? 'just_for_you'.tr : 'campaigns'.tr),
+      appBar: CustomAppBar(
+          title:
+              widget.isJustForYou ? 'offers_and_discounts'.tr : 'campaigns'.tr),
       endDrawer: const MenuDrawer(),
       endDrawerEnableOpenDragGesture: false,
       body: SingleChildScrollView(
