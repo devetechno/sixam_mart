@@ -28,7 +28,7 @@ class _JustForYouViewState extends State<JustForYouView> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
               child: TitleWidget(
-                title: 'just_for_you'.tr,
+                title: 'offers_and_discounts'.tr,
                 onTap: () => Get.toNamed(RouteHelper.getItemCampaignRoute(isJustForYou: true)),
               ),
             ),
