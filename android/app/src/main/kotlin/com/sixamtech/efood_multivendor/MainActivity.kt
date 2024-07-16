@@ -1,4 +1,4 @@
-package com.devetechno.ecomm
+package com.devetechno.elmowared
 
 import io.flutter.embedding.android.FlutterActivity
 
