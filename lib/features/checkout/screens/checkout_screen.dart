@@ -155,6 +155,8 @@ class CheckoutScreenState extends State<CheckoutScreen> {
       endDrawer: const MenuDrawer(),endDrawerEnableOpenDragGesture: false,
       body: guestCheckoutPermission || AuthHelper.isLoggedIn() ? GetBuilder<CheckoutController>(builder: (checkoutController) {
 
+        
+
         List<DropdownItem<int>> addressList = _getDropdownAddressList(context: context, addressList: Get.find<AddressController>().addressList, store: checkoutController.store);
         address = _getAddressList(addressList: Get.find<AddressController>().addressList, store: checkoutController.store);
 
@@ -219,7 +221,7 @@ class CheckoutScreenState extends State<CheckoutScreen> {
 
           total = total - referralDiscount;
 
-          if(widget.storeId != null){
+          if(widget.storeId != null || !(_isDigitalPaymentActive ?? false)){
             checkoutController.setPaymentMethod(0, isUpdate: false);
           }
           checkoutController.setTotalAmount(total - (checkoutController.isPartialPay ? Get.find<ProfileController>().userInfoModel!.walletBalance! : 0));
