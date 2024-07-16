@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "280955103500",
-    "project_id": "devetechno-de754",
-    "storage_bucket": "devetechno-de754.appspot.com"
+    "project_number": "749163718953",
+    "project_id": "elmowared-b4c6c",
+    "storage_bucket": "elmowared-b4c6c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:280955103500:android:f563cbf83415892d6a0129",
+        "mobilesdk_app_id": "1:749163718953:android:3eefbefc16878388ee6f38",
         "android_client_info": {
           "package_name": "com.devetechno.elmowared"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBY9Ezg-jnpfCDgLOKb24A2Ct84KAKbo4s"
+          "current_key": "AIzaSyDnsGvZY_60T7IE-IATu0GUDjtD3a3dBTA"
         }
       ],
       "services": {

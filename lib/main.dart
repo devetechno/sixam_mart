@@ -51,13 +51,13 @@ Future<void> main() async {
 
   if(GetPlatform.isWeb){
     await Firebase.initializeApp(options: const FirebaseOptions(
-        apiKey: "AIzaSyCrMxu1_23R78RmIUUjfAmA_kRoMduFdGw",
+        apiKey: "AIzaSyDnsGvZY_60T7IE-IATu0GUDjtD3a3dBTA",
         authDomain: "devetechno-de754.firebaseapp.com",
         databaseURL: "https://ammart-8885e-default-rtdb.firebaseio.com",
-        projectId: "devetechno-de754",
-        storageBucket: "devetechno-de754.appspot.com",
-        messagingSenderId: "280955103500",
-        appId: "1:280955103500:web:fb5907b6504b0f2a6a0129",
+        projectId: "elmowared-b4c6c",
+        storageBucket: "elmowared-b4c6c.appspot.com",
+        messagingSenderId: "749163718953",
+        appId: "11:749163718953:android:3eefbefc16878388ee6f38",
         measurementId: "G-D6CSWZT6VT"
 
     ));
@@ -65,10 +65,10 @@ Future<void> main() async {
   }else if(GetPlatform.isAndroid) {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
-        apiKey: "AIzaSyBY9Ezg-jnpfCDgLOKb24A2Ct84KAKbo4s",
-        appId: "1:280955103500:android:f563cbf83415892d6a0129",
-        messagingSenderId: "280955103500",
-        projectId: "devetechno-de754",
+        apiKey: "AIzaSyDnsGvZY_60T7IE-IATu0GUDjtD3a3dBTA",
+        appId: "1:749163718953:android:3eefbefc16878388ee6f38",
+        messagingSenderId: "749163718953",
+        projectId: "elmowared-b4c6c",
       ),
     );
   }else {
