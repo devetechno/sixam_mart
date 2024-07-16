@@ -223,7 +223,7 @@ class SignInScreenState extends State<SignInScreen> {
                                       Get.back();
                                       Get.dialog(const SignUpScreen());
                                     }else{
-                                      Get.toNamed(RouteHelper.getSignUpRoute());
+                                      Get.offNamed(RouteHelper.getSignUpRoute());
                                     }
                                   },
                                   child: Padding(
@@ -247,7 +247,7 @@ class SignInScreenState extends State<SignInScreen> {
                                       Get.back();
                                       Get.dialog(const SignUpScreen());
                                     }else{
-                                      Get.toNamed(RouteHelper.getSignUpRoute());
+                                      Get.offNamed(RouteHelper.getSignUpRoute());
                                     }
                                   },
                                   child: Padding(

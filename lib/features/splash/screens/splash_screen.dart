@@ -115,7 +115,7 @@ class SplashScreenState extends State<SplashScreen> {
                       Get.find<LocationController>().navigateToLocationScreen('splash', offNamed: true);
                     }
                   } else {
-                    Get.offNamed(RouteHelper.getSignInRoute(RouteHelper.splash));
+                    Get.offNamed(RouteHelper.getSignUpRoute());
                   }
                 }
               }

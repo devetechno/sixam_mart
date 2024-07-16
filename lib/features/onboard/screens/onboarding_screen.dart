@@ -84,7 +84,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       transparent: true,
                       onPressed: () {
                         Get.find<SplashController>().disableIntro();
-                        Get.offNamed(RouteHelper.getSignInRoute(RouteHelper.onBoarding));
+                        Get.offNamed(RouteHelper.getSignUpRoute());
                       },
                       buttonText: 'skip'.tr,
                     ),
@@ -97,7 +97,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           _pageController.nextPage(duration: const Duration(seconds: 1), curve: Curves.ease);
                         }else {
                           Get.find<SplashController>().disableIntro();
-                          Get.offNamed(RouteHelper.getSignInRoute(RouteHelper.onBoarding));
+                          Get.offNamed(RouteHelper.getSignUpRoute());
                         }
                       },
                     ),
