@@ -307,7 +307,8 @@ class SignInScreenState extends State<SignInScreen> {
                 if(ResponsiveHelper.isDesktop(context)){
                   Get.offAllNamed(RouteHelper.getInitialRoute(fromSplash: false));
                 } else {
-                  Get.back();
+                  // Get.back();
+                Get.find<LocationController>().navigateToLocationScreen('sign-in', offNamed: true);
                 }
               }else{
                 Get.find<LocationController>().navigateToLocationScreen('sign-in', offNamed: true);
